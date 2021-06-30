@@ -1,0 +1,14 @@
+{
+  "profiles": {
+    "IdentityServer": {
+      "commandName": "Project",
+      "launchBrowser": true,
+      "launchUrl": ".well-known/openid-configuration",
+      "environmentVariables": {
+        "ASPNETCORE_ENVIRONMENT": "Development"
+      },
+      "dotnetRunMessages": "true",
+      "applicationUrl": "https://localhost:10001;http://localhost:10000"
+    }
+  }
+}
