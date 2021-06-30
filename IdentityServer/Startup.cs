@@ -27,10 +27,8 @@ namespace IdentityServer
                 options.UseSqlServer(connectionString);
             });
 
-            services.AddIdentity<AppUser, IdentityRole>(config =>
-             {
-                 
-             })
+            services.AddDefaultIdentity<AppUser>()
+                .AddRoles<IdentityRole>()
                 .AddEntityFrameworkStores<AuthDbContext>()
                 .AddDefaultTokenProviders();
 
