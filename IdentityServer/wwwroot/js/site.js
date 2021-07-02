@@ -11,8 +11,8 @@
     var eyeSecondLeft = document.querySelector('.animation__eye--two-one');
     var eyeSecondRight = document.querySelector('.animation__eye--two-two');
 
-    inputLogin.addEventListener('focus', firstFocusHandler);
-    inputPassword.addEventListener('focus', firstFocusHandler);
+    inputLogin.addEventListener('focus', focusHandler);
+    inputPassword.addEventListener('focus', focusHandler);
 
     inputLogin.addEventListener('input', inputHandler);
     inputPassword.addEventListener('input', inputHandler);
@@ -20,50 +20,7 @@
     inputLogin.addEventListener('blur', blurHandler);
     inputPassword.addEventListener('blur', blurHandler);
 
-    function firstFocusHandler(evt) {
-        var animation = document.querySelector('.animation');
-        var animationVideo = document.querySelector('.animation__video');
-        var eye = document.querySelectorAll('.animation__eye');
-        var button = document.querySelector('.btn');
-
-        for (var i = 0; i < eye.length; i++) {
-            eye[i].style.display = 'block';
-            fadeIn(eye[i], 2000);
-            focusHandler(evt);
-        }
-
-        animation.style.maxHeight = '374px';
-        animationVideo.style.display = 'block';
-        fadeIn(animationVideo, 2000);
-        animationVideo.play();
-
-        inputLogin.removeEventListener('focus', firstFocusHandler);
-        inputPassword.removeEventListener('focus', firstFocusHandler);
-
-        inputLogin.addEventListener('focus', focusHandler);
-        inputPassword.addEventListener('focus', focusHandler);
-
-        button.addEventListener('click', clickHandler);
-    }
-
-    function fadeIn(elem, speed) {
-        var inInterval = setInterval(function () {
-            elem.style.opacity = Number(elem.style.opacity) + 0.02;
-            if (elem.style.opacity >= 1)
-                clearInterval(inInterval);
-        }, speed / 50);
-    }
-
-    function fadeOut(elem, speed) {
-        var outInterval = setInterval(function () {
-            if (!elem.style.opacity) {
-                elem.style.opacity = 1;
-            }
-            elem.style.opacity -= 0.02;
-            if (elem.style.opacity <= 0)
-                clearInterval(outInterval);
-        }, speed / 50);
-    }
+    blurHandler();
 
     function focusHandler(evt) {
         evt.preventDefault();
@@ -148,12 +105,6 @@
     function blurHandler() {
         setPosition('First', 60, 109, 106, 110);
         setPosition('Second', 252, 166, 298, 166);
-    }
-
-    function clickHandler() {
-        var wrapper = document.querySelector('.wrapper');
-        inputPassword.type = 'text';
-        fadeOut(wrapper, 1000);
     }
 
     function setPosition(person, xLeft, yLeft, xRight, yRight) {

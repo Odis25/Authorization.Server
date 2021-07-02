@@ -19,17 +19,20 @@
             </video>
         </div>
         <form class="auth-form" asp-controller="Auth" asp-action="Login" method="post">
+            <div class="text-validation" asp-validation-summary="ModelOnly"></div>
             <input type="hidden" asp-for="ReturnUrl" />
             <div class="input-group">
                 <label class="label">Имя пользователя</label>
                 <div class="login-field">
                     <input id="input-login" asp-for="Username" autocomplete="off" placeholder="Введите логин" />
+                    <span class="text-validation" asp-validation-for="Username" />
                 </div>
             </div>
             <div class="input-group">
                 <label class="label">Пароль</label>
                 <div class="password-field">
                     <input id="input-password" type="password" asp-for="Password" placeholder="Введите пароль" />
+                    <span class="text-validation" asp-validation-for="Password" />
                 </div>
             </div>
             <div class="input-group">
@@ -39,4 +42,7 @@
     </div>
 </div>
 
-<script src="~/js/site.js"></script>
+<script src="~/lib/jquery/jquery.min.js"></script>
+<script src="~/lib/jquery-validate/jquery.validate.min.js"></script>
+<script src="~/lib/jquery-validation-unobtrusive/jquery.validate.unobtrusive.min.js"></script>
+<script src="~/js/site.js" asp-append-version="true"></script>

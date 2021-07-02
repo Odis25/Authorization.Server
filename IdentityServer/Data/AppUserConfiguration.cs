@@ -8,7 +8,7 @@ namespace IdentityServer.Data
     {
         public void Configure(EntityTypeBuilder<AppUser> builder)
         {
-            
+            builder.HasKey(user => user.Id);
         }
     }
 }

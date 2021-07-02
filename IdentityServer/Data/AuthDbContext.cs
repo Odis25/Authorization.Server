@@ -16,11 +16,11 @@ namespace IdentityServer.Data
 
             builder.Entity<AppUser>(entity => entity.ToTable("Users"));
             builder.Entity<IdentityRole>(entity => entity.ToTable("Roles"));
-            builder.Entity<IdentityUserRole<int>>(entity => entity.ToTable("UserRoles"));
-            builder.Entity<IdentityUserClaim<int>>(entity => entity.ToTable("UserClaims"));
-            builder.Entity<IdentityUserLogin<int>>(entity => entity.ToTable("UserLogins"));
-            builder.Entity<IdentityUserToken<int>>(entity => entity.ToTable("UserTokens"));
-            builder.Entity<IdentityRoleClaim<int>>(entity => entity.ToTable("RoleClaims"));
+            builder.Entity<IdentityUserRole<string>>(entity => entity.ToTable("UserRoles"));
+            builder.Entity<IdentityUserClaim<string>>(entity => entity.ToTable("UserClaims"));
+            builder.Entity<IdentityUserLogin<string>>(entity => entity.ToTable("UserLogins"));
+            builder.Entity<IdentityUserToken<string>>(entity => entity.ToTable("UserTokens"));
+            builder.Entity<IdentityRoleClaim<string>>(entity => entity.ToTable("RoleClaims"));
 
             builder.ApplyConfiguration(new AppUserConfiguration());
         }
