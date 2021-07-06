@@ -1,4 +1,5 @@
 using IdentityServer.Data;
+using IdentityServer.Interfaces;
 using IdentityServer.Models;
 using IdentityServer.Services;
 using Microsoft.AspNetCore.Builder;
@@ -47,7 +48,7 @@ namespace IdentityServer
                 config.LogoutPath = "/Auth/Logout";
             });
 
-            services.AddTransient<AuthService>();
+            services.AddTransient<IAuthService,AuthService>();
 
             services.AddControllersWithViews();
         }

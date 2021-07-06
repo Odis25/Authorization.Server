@@ -1,5 +1,5 @@
-﻿using IdentityServer.Models;
-using IdentityServer.Services;
+﻿using IdentityServer.Interfaces;
+using IdentityServer.Models;
 using IdentityServer4.Services;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
@@ -10,14 +10,14 @@ namespace IdentityServer.Controllers
 {
     public class AuthController : Controller
     {
-        private readonly AuthService _authService;
-        private readonly SignInManager<AppUser> _signInManager;
+        private readonly IAuthService _authService;
         private readonly IIdentityServerInteractionService _interactionService;
+        private readonly SignInManager<AppUser> _signInManager;
 
-        public AuthController(AuthService authService,
-            SignInManager<AppUser> signInManager,
-            IIdentityServerInteractionService interactionService) =>
-            (_authService, _signInManager, _interactionService) = (authService, signInManager, interactionService);
+        public AuthController(IAuthService authService,
+            IIdentityServerInteractionService interactionService,
+            SignInManager<AppUser> signInManager) =>
+            (_authService, _interactionService, _signInManager) = (authService, interactionService, signInManager);
 
         [HttpGet]
         public IActionResult Login(string returnUrl)
