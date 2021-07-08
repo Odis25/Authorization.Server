@@ -39,7 +39,7 @@ namespace IdentityServer.Controllers
                     {
                         await _signInManager.SignInAsync(user, false);
 
-                        Redirect(viewModel.ReturnUrl);
+                        return Redirect(viewModel.ReturnUrl);
                     }
                     ModelState.AddModelError("", "Некорректное имя пользователя или пароль");
                 }
@@ -59,7 +59,7 @@ namespace IdentityServer.Controllers
 
             var logoutRequest = await _interactionService.GetLogoutContextAsync(logoutId);
 
-            return Redirect(logoutRequest.PostLogoutRedirectUri);
+            return Redirect(logoutRequest.PostLogoutRedirectUri);        
         }
     }
 }

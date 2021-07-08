@@ -28,9 +28,9 @@ namespace IdentityServer
                 options.UseSqlServer(connectionString);
             });
 
-            services.AddDefaultIdentity<AppUser>()
-                .AddRoles<IdentityRole>()
+            services.AddIdentity<AppUser, IdentityRole>()
                 .AddEntityFrameworkStores<AuthDbContext>()
+                .AddClaimsPrincipalFactory<AppUserClaimsPrincipalFactory>()
                 .AddDefaultTokenProviders();
 
             services.AddIdentityServer()
@@ -48,7 +48,7 @@ namespace IdentityServer
                 config.LogoutPath = "/Auth/Logout";
             });
 
-            services.AddTransient<IAuthService,AuthService>();
+            services.AddTransient<IAuthService, AuthService>();
 
             services.AddControllersWithViews();
         }

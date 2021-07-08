@@ -1,4 +1,4 @@
-﻿using IdentityModel;
+﻿using IdentityServer.Profiles;
 using IdentityServer4;
 using IdentityServer4.Models;
 using System.Collections.Generic;
@@ -18,19 +18,19 @@ namespace IdentityServer
             new List<IdentityResource>
             {
                 new IdentityResources.OpenId(),
-                new IdentityResources.Profile()
+                new InventoryAppProfile()
             };
 
         public static IEnumerable<ApiResource> ApiResources =>
             new List<ApiResource>
             {
-                new ApiResource("InventoryAPI","InventoryApp Web API", new []
+                new ApiResource("InventoryAPI", "InventoryApp Web API", new []
                 { 
-                    JwtClaimTypes.Name
+                    "inventoryAppRole"
                 }),
                 new ApiResource("CheckerAPI", "CheckerApp Web API", new[]
                 {
-                    JwtClaimTypes.Name
+                    "checkerAppRole"
                 })
             };
 
@@ -44,17 +44,21 @@ namespace IdentityServer
                     AllowedGrantTypes = GrantTypes.Code,
                     RequirePkce = true,
                     RequireClientSecret = false,
+                    RequireConsent = false,
                     RedirectUris =
                     {
-                        "http://.../signin-oidc"
+                        "http://localhost:5000/authentication/login-callback",
+                        "https://localhost:5001/authentication/login-callback"
                     },
                     AllowedCorsOrigins =
                     {
-                        "http://..."
+                        "http://localhost:5000",
+                        "https://localhost:5001"
                     },
                     PostLogoutRedirectUris =
                     {
-                        "http://.../signout-oidc"
+                        "http://localhost:5000/authentication/logout-callback",
+                        "https://localhost:5001/authentication/logout-callback"
                     },
                     AllowedScopes =
                     {
