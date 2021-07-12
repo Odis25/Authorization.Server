@@ -1,4 +1,5 @@
-﻿using IdentityServer4;
+﻿using IdentityModel;
+using IdentityServer4;
 using IdentityServer4.Models;
 using System.Collections.Generic;
 
@@ -18,15 +19,49 @@ namespace IdentityServer
             {
                 new IdentityResources.OpenId(),
                 new IdentityResources.Profile(),
-                new IdentityResource("inventoryapp_role", new[] { "inventoryapp_role" }),
-                new IdentityResource("checkerapp_role", new[] { "checkerapp_role" }),
+                new IdentityResource
+                {
+                    Name = "inventoryapp_role",
+                    DisplayName = "InventoryApp User Role",
+                    UserClaims = new[] { "inventoryapp_role" }
+                },
+                new IdentityResource
+                {
+                    Name = "checkerapp_role",
+                    DisplayName = "CheckerApp User Role",
+                    UserClaims = new[] { "checkerapp_role" }
+                }
             };
 
         public static IEnumerable<ApiResource> ApiResources =>
             new List<ApiResource>
             {
-                new ApiResource("InventoryAPI", "InventoryApp Web API"),
-                new ApiResource("CheckerAPI", "CheckerApp Web API")
+                new ApiResource
+                {
+                    Name = "InventoryAPI",
+                    DisplayName = "InventoryApp Web API",
+                    Scopes = new[]{ "InventoryAPI" },
+                    UserClaims = new [] 
+                    { 
+                        "inventoryapp_role",
+                        JwtClaimTypes.Name,
+                        JwtClaimTypes.GivenName, 
+                        JwtClaimTypes.FamilyName 
+                    }
+                },
+                new ApiResource
+                {
+                    Name = "CheckerAPI",
+                    DisplayName = "CheckerApp Web API",
+                    Scopes = new[]{ "CheckerAPI" },
+                    UserClaims = new [] 
+                    { 
+                        "checkerapp_role",
+                        JwtClaimTypes.Name,
+                        JwtClaimTypes.GivenName,
+                        JwtClaimTypes.FamilyName
+                    }
+                },
             };
 
         public static IEnumerable<Client> Clients =>
@@ -40,15 +75,15 @@ namespace IdentityServer
                     RequirePkce = true,
                     RequireClientSecret = false,
                     RequireConsent = false,
-                    RedirectUris =
-                    {
-                        "http://localhost:5000/authentication/login-callback",
-                        "https://localhost:5001/authentication/login-callback"
-                    },
                     AllowedCorsOrigins =
                     {
                         "http://localhost:5000",
                         "https://localhost:5001"
+                    },
+                    RedirectUris =
+                    {
+                        "http://localhost:5000/authentication/login-callback",
+                        "https://localhost:5001/authentication/login-callback"
                     },
                     PostLogoutRedirectUris =
                     {
@@ -62,7 +97,7 @@ namespace IdentityServer
                         "inventoryapp_role",
                         "InventoryAPI"
                     },
-                    AllowAccessTokensViaBrowser = true,
+                    AllowAccessTokensViaBrowser = true
                 },
                 new Client
                 {
@@ -72,15 +107,15 @@ namespace IdentityServer
                     RequirePkce = true,
                     RequireClientSecret = false,
                     RequireConsent = false,
-                    RedirectUris =
-                    {
-                        "http://localhost:6000/authentication/login-callback",
-                        "https://localhost:6001/authentication/login-callback"
-                    },
                     AllowedCorsOrigins =
                     {
                         "http://localhost:6000",
                         "https://localhost:6001"
+                    },
+                    RedirectUris =
+                    {
+                        "http://localhost:6000/authentication/login-callback",
+                        "https://localhost:6001/authentication/login-callback"
                     },
                     PostLogoutRedirectUris =
                     {
