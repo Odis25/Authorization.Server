@@ -1,46 +1,53 @@
 ﻿@model LoginViewModel
 
-<head>
-    <link rel="stylesheet" href="~/css/style.css" />
-    <link rel="stylesheet" href="~/icons/css/all.min.css" />
-</head>
-
+@{
+    ViewBag.Title = "Авторизация";
+}
 
 <div class="container">
-    <div class="wrapper">
-        <h3 class="header">Авторизация</h3>
-        <div class="animation">
-            <div class="animation__eye animation__eye--one-one"></div>
-            <div class="animation__eye animation__eye--one-two"></div>
-            <div class="animation__eye animation__eye--two-one"></div>
-            <div class="animation__eye animation__eye--two-two"></div>
-            <video class="animation__video" width="384" height="374" loop muted autoplay>
-                <source src="~/videos/watchers.mp4" type="video/mp4" />
-            </video>
+    <div class="row vh-100 align-items-center">
+        <div class="col">
+            <div class="wrapper">
+                <h3 class="h3 fw-bold text-center">Авторизация</h3>
+                <div class="animation">
+                    <div class="animation__eye animation__eye--one-one"></div>
+                    <div class="animation__eye animation__eye--one-two"></div>
+                    <div class="animation__eye animation__eye--two-one"></div>
+                    <div class="animation__eye animation__eye--two-two"></div>
+                    <video class="animation__video" width="384" height="374" loop muted autoplay>
+                        <source src="~/videos/watchers.mp4" type="video/mp4" />
+                    </video>
+                </div>
+                <form class="auth-form" asp-controller="Auth" asp-action="Login" method="post">
+                    <div class="text-validation" asp-validation-summary="ModelOnly"></div>
+                    <input type="hidden" asp-for="ReturnUrl" />
+                    <div class="form-group">
+                        <label class="label">Имя пользователя</label>
+                        <div class="login-field">
+                            <input id="input-login" asp-for="Username" autocomplete="off" placeholder="Введите логин" />
+                            <span class="text-validation" asp-validation-for="Username" />
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <label class="label">Пароль</label>
+                        <div class="password-field">
+                            <input id="input-password" type="password" asp-for="Password" placeholder="Введите пароль" />
+                            <span class="text-validation" asp-validation-for="Password" />
+                        </div>
+                    </div>
+                    <div class="form-check mb-3">
+                        <input class="form-check-input" type="checkbox" asp-for="RememberMe" id="checkbox" />
+                        <label class="form-check-label" for="checkbox">Запомнить меня</label>
+                    </div>
+                    <div class="form-group">
+                        <button class="btn btn-primary w-100" type="submit">Вход</button>
+                    </div>
+                </form>
+            </div>
         </div>
-        <form class="auth-form" asp-controller="Auth" asp-action="Login" method="post">
-            <div class="text-validation" asp-validation-summary="ModelOnly"></div>
-            <input type="hidden" asp-for="ReturnUrl" />
-            <div class="input-group">
-                <label class="label">Имя пользователя</label>
-                <div class="login-field">
-                    <input id="input-login" asp-for="Username" autocomplete="off" placeholder="Введите логин" />
-                    <span class="text-validation" asp-validation-for="Username" />
-                </div>
-            </div>
-            <div class="input-group">
-                <label class="label">Пароль</label>
-                <div class="password-field">
-                    <input id="input-password" type="password" asp-for="Password" placeholder="Введите пароль" />
-                    <span class="text-validation" asp-validation-for="Password" />
-                </div>
-            </div>
-            <div class="input-group">
-                <button class="btn" type="submit">Вход</button>
-            </div>
-        </form>
     </div>
 </div>
+
 
 <script src="~/lib/jquery/jquery.min.js"></script>
 <script src="~/lib/jquery-validate/jquery.validate.min.js"></script>

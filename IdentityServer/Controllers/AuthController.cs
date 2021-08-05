@@ -37,7 +37,7 @@ namespace IdentityServer.Controllers
                     var user = await _authService.GetUserAsync(viewModel.Username, viewModel.Password);
                     if (user != null)
                     {
-                        await _signInManager.SignInAsync(user, false);
+                        await _signInManager.SignInAsync(user, viewModel.RememberMe);
 
                         return Redirect(viewModel.ReturnUrl);
                     }

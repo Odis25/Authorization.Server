@@ -1,5 +1,7 @@
-﻿body {
-    padding: 50px;
+﻿*,::before,::after{
+    box-sizing:border-box;
+}
+body {
     background: url("../images/security-codes-numbers-bladed.jpg") fixed 50%/cover no-repeat #4b7ca0;
     font-family: Arial, sans-serif;
     font-size: 16px;
@@ -11,19 +13,13 @@
     font-size: 14px;
 }
 
-.container {
-    display: flex;
-    height: 100%;
-    justify-content: center;
-    align-items: center;
-}
-
 .wrapper {
+    margin: 0 auto;
     box-shadow: 10px 10px 10px rgba(0,0,0,0.5), -10px -10px 10px rgba(0,0,0,0.5);
-    width: 388px;
-    padding-left: 8px;
+    width: 418px;
+    padding-left: 15px;
     padding-top: 8px;
-    padding-right: 8px;
+    padding-right: 15px;
     padding-bottom: 10px;
     border-radius: 5px;
     border-color: #444;
@@ -31,14 +27,6 @@
     border-style: solid;
     background-color: #ececec;
     font-family: "Arial", "Helvetica Neue", "Helvetica", sans-serif;
-}
-
-.header {
-    font-size: 30px;
-    text-align: center;
-    padding: 5px;
-    margin-bottom: 5px;
-    margin-top: 5px;
 }
 
 .animation {
@@ -66,9 +54,8 @@
     opacity: 1;
 }
 
-.input-group {
-    padding: 10px;
-    margin-bottom: 5px;
+.form-group {
+    margin-bottom: 10px;
 }
 
 #input-login, #input-password {
@@ -98,7 +85,7 @@
     color: #333;
 }
 
-.btn {
+/*.btn {
     width: 100%;
     padding: 10px;
     font-size: 20px;
@@ -107,4 +94,4 @@
     border-radius: 3px;
     color: #fff;
     cursor: pointer;
-}
+}*/
