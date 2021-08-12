@@ -2,6 +2,8 @@ using IdentityServer.Data;
 using IdentityServer.Interfaces;
 using IdentityServer.Models;
 using IdentityServer.Services;
+using IdentityServer4.EntityFramework.DbContexts;
+using IdentityServer4.EntityFramework.Mappers;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Identity;
@@ -9,6 +11,8 @@ using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
+using System.Linq;
+using System.Reflection;
 
 namespace IdentityServer
 {
@@ -34,11 +38,22 @@ namespace IdentityServer
                 .AddDefaultTokenProviders();
 
             services.AddIdentityServer()
+                .AddConfigurationStore(options => 
+                {
+                    options.ConfigureDbContext = builder =>
+                        builder.UseSqlServer(connectionString,
+                        sql => sql.MigrationsAssembly(Assembly.GetExecutingAssembly().GetName().Name));
+                })
+                .AddOperationalStore(options =>
+                {
+                    options.ConfigureDbContext = builder =>
+                        builder.UseSqlServer(connectionString,
+                        sql => sql.MigrationsAssembly(Assembly.GetExecutingAssembly().GetName().Name));
+
+                    options.EnableTokenCleanup = true;
+                    options.TokenCleanupInterval = 30;
+                })
                 .AddAspNetIdentity<AppUser>()
-                .AddInMemoryApiResources(Configuration.ApiResources)
-                .AddInMemoryApiScopes(Configuration.ApiScopes)
-                .AddInMemoryClients(Configuration.Clients)
-                .AddInMemoryIdentityResources(Configuration.IdentityResources)
                 .AddDeveloperSigningCredential();
 
             services.ConfigureApplicationCookie(config =>
@@ -55,13 +70,16 @@ namespace IdentityServer
 
         public void Configure(IApplicationBuilder app, IWebHostEnvironment env)
         {
+            DbInitializer.InitializeDatabase(app);
+
             if (env.IsDevelopment())
             {
                 app.UseDeveloperExceptionPage();
             }
 
-            app.UseRouting();
             app.UseStaticFiles();
+            app.UseRouting();
+            
             app.UseIdentityServer();
 
             app.UseEndpoints(endpoints =>

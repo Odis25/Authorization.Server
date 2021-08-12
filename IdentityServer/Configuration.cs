@@ -7,13 +7,6 @@ namespace IdentityServer
 {
     public static class Configuration
     {
-        public static IEnumerable<ApiScope> ApiScopes =>
-            new List<ApiScope>
-            {
-                new ApiScope("InventoryAPI", "InventoryApp Web API"),
-                new ApiScope("CheckerAPI", "CheckerApp Web API")
-            };
-
         public static IEnumerable<IdentityResource> IdentityResources =>
             new List<IdentityResource>
             {
@@ -31,6 +24,13 @@ namespace IdentityServer
                     DisplayName = "CheckerApp User Role",
                     UserClaims = new[] { "checkerapp_role" }
                 }
+            };
+
+        public static IEnumerable<ApiScope> ApiScopes =>
+            new List<ApiScope>
+            {
+                new ApiScope("InventoryAPI", "InventoryApp Web API"),
+                new ApiScope("CheckerAPI", "CheckerApp Web API")
             };
 
         public static IEnumerable<ApiResource> ApiResources =>
@@ -71,24 +71,26 @@ namespace IdentityServer
                 {
                     ClientId = "inventory-web-api",
                     ClientName = "InventoryApp Web",
+                    RequireClientSecret = false,
+
                     AllowedGrantTypes = GrantTypes.Code,
                     RequirePkce = true,
-                    RequireClientSecret = false,
+
                     RequireConsent = false,
                     AllowedCorsOrigins =
                     {
-                        "http://localhost:5000",
-                        "https://localhost:5001"
+                        "https://pnrsu-server.incomsystem.ru:8080",
+                        "https://192.168.110.17:8080",
                     },
                     RedirectUris =
                     {
-                        "http://localhost:5000/authentication/login-callback",
-                        "https://localhost:5001/authentication/login-callback"
+                        "https://pnrsu-server.incomsystem.ru:8080/authentication/login-callback",
+                        "https://192.168.110.17:8080/authentication/login-callback",
                     },
                     PostLogoutRedirectUris =
                     {
-                        "http://localhost:5000/authentication/logout-callback",
-                        "https://localhost:5001/authentication/logout-callback"
+                        "https://pnrsu-server.incomsystem.ru:8080/authentication/logout-callback",
+                        "https://192.168.110.17:8080/authentication/logout-callback",
                     },
                     AllowedScopes =
                     {
@@ -109,18 +111,18 @@ namespace IdentityServer
                     RequireConsent = false,
                     AllowedCorsOrigins =
                     {
-                        "http://localhost:6000",
-                        "https://localhost:6001"
+                        "http://192.168.110.17:6000",
+                        "https://192.168.110.17:6001"
                     },
                     RedirectUris =
                     {
-                        "http://localhost:6000/authentication/login-callback",
-                        "https://localhost:6001/authentication/login-callback"
+                        "http://192.168.110.17:6000/authentication/login-callback",
+                        "https://192.168.110.17:6001/authentication/login-callback"
                     },
                     PostLogoutRedirectUris =
                     {
-                        "http://localhost:6000/authentication/logout-callback",
-                        "https://localhost:6001/authentication/logout-callback"
+                        "http://192.168.110.17:6000/authentication/logout-callback",
+                        "https://192.168.110.17:6001/authentication/logout-callback"
                     },
                     AllowedScopes =
                     {
