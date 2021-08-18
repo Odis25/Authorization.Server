@@ -61,7 +61,7 @@ namespace IdentityServer
                         JwtClaimTypes.GivenName,
                         JwtClaimTypes.FamilyName
                     }
-                },
+                }
             };
 
         public static IEnumerable<Client> Clients =>
@@ -81,16 +81,22 @@ namespace IdentityServer
                     {
                         "https://pnrsu-server.incomsystem.ru:8080",
                         "https://192.168.110.17:8080",
+                        //"https://opnrdiso002.incomsystem.ru:8080",
+                        //"https://192.168.110.13:8080",
                     },
                     RedirectUris =
                     {
                         "https://pnrsu-server.incomsystem.ru:8080/authentication/login-callback",
                         "https://192.168.110.17:8080/authentication/login-callback",
+                        //"https://192.168.110.13:8080/authentication/login-callback",
+                        //"https://opnrdiso002.incomsystem.ru:8080/authentication/login-callback",
                     },
                     PostLogoutRedirectUris =
                     {
                         "https://pnrsu-server.incomsystem.ru:8080/authentication/logout-callback",
                         "https://192.168.110.17:8080/authentication/logout-callback",
+                        //"https://192.168.110.13:8080/authentication/logout-callback",
+                        //"https://opnrdiso002.incomsystem.ru:8080/authentication/logout-callback",
                     },
                     AllowedScopes =
                     {

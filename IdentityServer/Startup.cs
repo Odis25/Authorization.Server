@@ -2,8 +2,6 @@ using IdentityServer.Data;
 using IdentityServer.Interfaces;
 using IdentityServer.Models;
 using IdentityServer.Services;
-using IdentityServer4.EntityFramework.DbContexts;
-using IdentityServer4.EntityFramework.Mappers;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Identity;
@@ -11,7 +9,7 @@ using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
-using System.Linq;
+using Microsoft.Extensions.Logging;
 using System.Reflection;
 
 namespace IdentityServer
@@ -38,7 +36,11 @@ namespace IdentityServer
                 .AddDefaultTokenProviders();
 
             services.AddIdentityServer()
-                .AddConfigurationStore(options => 
+                //.AddInMemoryApiResources(Configuration.ApiResources)
+                //.AddInMemoryApiScopes(Configuration.ApiScopes)
+                //.AddInMemoryIdentityResources(Configuration.IdentityResources)
+                //.AddInMemoryClients(Configuration.Clients)
+                .AddConfigurationStore(options =>
                 {
                     options.ConfigureDbContext = builder =>
                         builder.UseSqlServer(connectionString,
@@ -51,7 +53,7 @@ namespace IdentityServer
                         sql => sql.MigrationsAssembly(Assembly.GetExecutingAssembly().GetName().Name));
 
                     options.EnableTokenCleanup = true;
-                    options.TokenCleanupInterval = 30;
+                    options.TokenCleanupInterval = 3600;
                 })
                 .AddAspNetIdentity<AppUser>()
                 .AddDeveloperSigningCredential();
@@ -65,21 +67,41 @@ namespace IdentityServer
 
             services.AddTransient<IAuthService, AuthService>();
 
+            services.AddCors(options =>
+            {
+                options.AddDefaultPolicy(policy =>
+                {
+                    policy.WithOrigins(
+                        "https://192.168.110.17:8080",
+                        "https://pnrsu-server.incomsystem.ru:8080")
+                    .AllowAnyHeader()
+                    .AllowAnyMethod();
+                });
+            });
+
             services.AddControllersWithViews();
         }
 
-        public void Configure(IApplicationBuilder app, IWebHostEnvironment env)
+        public void Configure(IApplicationBuilder app, IWebHostEnvironment env, ILogger<Program> logger)
         {
-            DbInitializer.InitializeDatabase(app);
+            try
+            {
+                DbInitializer.InitializeDatabase(app);
+            }
+            catch (System.Exception ex)
+            {
+                logger.LogError(ex.Message);
+            }
 
             if (env.IsDevelopment())
             {
                 app.UseDeveloperExceptionPage();
             }
 
-            app.UseStaticFiles();
             app.UseRouting();
-            
+            app.UseStaticFiles();
+            app.UseCors();
+
             app.UseIdentityServer();
 
             app.UseEndpoints(endpoints =>

@@ -1,8 +1,11 @@
-﻿using IdentityServer.Helpers;
+﻿using IdentityServer.Data;
+using IdentityServer.Helpers;
 using IdentityServer.Interfaces;
 using IdentityServer.Models;
 using Microsoft.AspNetCore.Identity;
+using Microsoft.EntityFrameworkCore;
 using System;
+using System.Collections.Generic;
 using System.DirectoryServices.AccountManagement;
 using System.Linq;
 using System.Runtime.Versioning;
@@ -15,9 +18,10 @@ namespace IdentityServer.Services
     public class AuthService : IAuthService
     {
         private readonly UserManager<AppUser> _userManager;
+        private readonly AuthDbContext _context;
 
-        public AuthService(UserManager<AppUser> userManager) =>
-            _userManager = userManager;
+        public AuthService(UserManager<AppUser> userManager, AuthDbContext context) =>
+            (_userManager, _context) = (userManager, context);
 
         public async Task<AppUser> GetUserAsync(string name, string password)
         {
@@ -34,21 +38,59 @@ namespace IdentityServer.Services
             }
         }
 
+        public async Task<IList<Account>> GetInventoryAppUsersAsync()
+        {
+            var accounts = new List<Account>();
+            var users = _userManager.Users.ToList();
+
+            foreach (var user in users)
+            {
+                var claims = await _userManager.GetClaimsAsync(user);
+
+                var account = new Account
+                {
+                    UserId = user.Id,
+                    FirstName = user.FirstName,
+                    LastName = user.LastName,
+                    Name = user.UserName,
+                    Role = claims.First(c => c.Type == AppClaims.InventoryAppRole.Type).Value
+                };
+
+                accounts.Add(account);
+            }
+
+            return accounts;
+        }
+
+        public async Task SaveInventoryAppChangesAsync(IList<Account> accounts)
+        {
+            foreach (var account in accounts)
+            {
+                var roleClaim = await _context.UserClaims
+                    .FirstOrDefaultAsync(uc => 
+                    uc.UserId == account.UserId 
+                    && uc.ClaimType == AppClaims.InventoryAppRole.Type);
+
+                roleClaim.ClaimValue = account.Role;
+            }
+            await _context.SaveChangesAsync();
+        }
+
         private async Task CheckRoles(AppUser user)
         {
             var claims = await _userManager.GetClaimsAsync(user);
 
-            foreach (var roleClaim in Roles.RoleClaims)
+            foreach (var roleClaim in AppRoles.RoleClaims)
             {
                 if (!claims.Any(c=> c.Type == roleClaim))
                 {
                     if (user.UserName.Equals("budanovav", StringComparison.OrdinalIgnoreCase))
                     {                       
-                        await _userManager.AddClaimAsync(user, new Claim(roleClaim, Roles.Admin));
+                        await _userManager.AddClaimAsync(user, new Claim(roleClaim, AppRoles.Admin));
                     }
                     else
                     {
-                        await _userManager.AddClaimAsync(user, new Claim(roleClaim, Roles.User)); ;
+                        await _userManager.AddClaimAsync(user, new Claim(roleClaim, AppRoles.User)); ;
                     }
                 }
             }         

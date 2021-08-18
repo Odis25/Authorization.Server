@@ -46,6 +46,14 @@ namespace IdentityServer.Data
                     }
                     context.SaveChanges();
                 }
+                if (!context.ApiScopes.Any())
+                {
+                    foreach (var scope in Configuration.ApiScopes)
+                    {
+                        context.ApiScopes.Add(scope.ToEntity());
+                    }
+                    context.SaveChanges();
+                }
             }
         }
     }
