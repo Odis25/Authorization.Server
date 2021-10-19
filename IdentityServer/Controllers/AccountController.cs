@@ -31,5 +31,28 @@ namespace IdentityServer.Controllers
 
             return NoContent();
         }
+
+        [HttpGet("checkerapp")]
+        public async Task<IActionResult> GetCheckerAppAccounts()
+        {
+            var accounts = await _authService.GetCheckerAppUsersAsync();
+
+            return Ok(accounts);
+        }
+
+        [HttpPut("checkerapp")]
+        public async Task<IActionResult> SaveCheckerAppChanges([FromBody] IList<Account> accounts)
+        {
+            await _authService.SaveCheckerAppChangesAsync(accounts);
+
+            return NoContent();
+        }
+
+        [HttpGet("{id}")]
+        public async Task<IActionResult> GetUserFullName(string id)
+        {
+            var name = await _authService.GetUserFullName(id);
+            return Ok(name);
+        }
     }
 }

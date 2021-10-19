@@ -38,6 +38,7 @@ namespace IdentityServer.Services
             }
         }
 
+        // Получить пользовательские аккаунты для приложения InventoryApp
         public async Task<IList<Account>> GetInventoryAppUsersAsync()
         {
             var accounts = new List<Account>();
@@ -45,7 +46,12 @@ namespace IdentityServer.Services
 
             foreach (var user in users)
             {
-                var claims = await _userManager.GetClaimsAsync(user);
+                var claim = await _context.UserClaims
+                    .FirstOrDefaultAsync(uc =>
+                    uc.UserId == user.Id
+                    && uc.ClaimType == AppClaims.InventoryAppRole.Type);
+
+                var role = claim == null ? AppClaims.InventoryAppRole.Value : claim.ClaimValue;
 
                 var account = new Account
                 {
@@ -53,27 +59,89 @@ namespace IdentityServer.Services
                     FirstName = user.FirstName,
                     LastName = user.LastName,
                     Name = user.UserName,
-                    Role = claims.First(c => c.Type == AppClaims.InventoryAppRole.Type).Value
+                    Role = role
                 };
-
                 accounts.Add(account);
             }
 
             return accounts;
         }
 
+        // Получить пользовательские аккаунты для приложения CheckerApp
+        public async Task<IList<Account>> GetCheckerAppUsersAsync()
+        {
+            var accounts = new List<Account>();
+            var users = _userManager.Users.ToList();
+
+            foreach (var user in users)
+            {
+                var claim = await _context.UserClaims
+                    .FirstOrDefaultAsync(uc =>
+                    uc.UserId == user.Id
+                    && uc.ClaimType == AppClaims.CheckerAppRole.Type);
+
+                var role = claim == null ? AppClaims.CheckerAppRole.Value : claim.ClaimValue;
+
+                var account = new Account
+                {
+                    UserId = user.Id,
+                    FirstName = user.FirstName,
+                    LastName = user.LastName,
+                    Name = user.UserName,
+                    Role = role
+                };
+                accounts.Add(account);
+            }
+
+            return accounts;
+        }
+
+        // Сохранение изменений пользователей InventoryApp
         public async Task SaveInventoryAppChangesAsync(IList<Account> accounts)
         {
             foreach (var account in accounts)
             {
                 var roleClaim = await _context.UserClaims
-                    .FirstOrDefaultAsync(uc => 
-                    uc.UserId == account.UserId 
+                    .FirstOrDefaultAsync(uc =>
+                    uc.UserId == account.UserId
                     && uc.ClaimType == AppClaims.InventoryAppRole.Type);
 
-                roleClaim.ClaimValue = account.Role;
+                if (roleClaim == null)
+                {
+                    var user = await _userManager.FindByIdAsync(account.UserId);
+                    var claim = new Claim(AppClaims.InventoryAppRole.Type, account.Role);
+                    await _userManager.AddClaimAsync(user, claim);
+                }
+                else
+                {
+                    roleClaim.ClaimValue = account.Role;
+                    await _context.SaveChangesAsync();
+                }
             }
-            await _context.SaveChangesAsync();
+        }
+
+        // Сохранение изменений пользователей CheckerApp
+        public async Task SaveCheckerAppChangesAsync(IList<Account> accounts)
+        {
+            foreach (var account in accounts)
+            {
+                var roleClaim = await _context.UserClaims
+                    .FirstOrDefaultAsync(uc =>
+                    uc.UserId == account.UserId
+                    && uc.ClaimType == AppClaims.CheckerAppRole.Type);
+
+                if (roleClaim == null)
+                {
+                    var user = await _userManager.FindByIdAsync(account.UserId);
+                    var claim = new Claim(AppClaims.CheckerAppRole.Type, account.Role);
+                    await _userManager.AddClaimAsync(user, claim);
+                }
+                else
+                {
+                    roleClaim.ClaimValue = account.Role;
+                    await _context.SaveChangesAsync();
+                }
+            }
         }
 
         private async Task CheckRoles(AppUser user)
@@ -82,20 +150,21 @@ namespace IdentityServer.Services
 
             foreach (var roleClaim in AppRoles.RoleClaims)
             {
-                if (!claims.Any(c=> c.Type == roleClaim))
+                if (!claims.Any(c => c.Type == roleClaim))
                 {
                     if (user.UserName.Equals("budanovav", StringComparison.OrdinalIgnoreCase))
-                    {                       
+                    {
                         await _userManager.AddClaimAsync(user, new Claim(roleClaim, AppRoles.Admin));
                     }
                     else
                     {
-                        await _userManager.AddClaimAsync(user, new Claim(roleClaim, AppRoles.User)); ;
+                        await _userManager.AddClaimAsync(user, new Claim(roleClaim, AppRoles.User));
                     }
                 }
-            }         
+            }
         }
 
+        // Регистрация нового пользователя в системе
         private async Task<AppUser> CreateNewUserAsync(PrincipalContext context, string name)
         {
             var userPrincipal = UserPrincipal.FindByIdentity(context, IdentityType.SamAccountName, name);
@@ -112,6 +181,14 @@ namespace IdentityServer.Services
             await _userManager.CreateAsync(user);
 
             return user;
+        }
+
+        // Получение плного имени пользователя
+        public async Task<string> GetUserFullName(string id)
+        {
+            var user = await _userManager.FindByIdAsync(id);
+
+            return $"{user.LastName} {user.FirstName}";
         }
     }
 }

@@ -80,23 +80,17 @@ namespace IdentityServer
                     AllowedCorsOrigins =
                     {
                         "https://pnrsu-server.incomsystem.ru:8080",
-                        "https://192.168.110.17:8080",
-                        //"https://opnrdiso002.incomsystem.ru:8080",
-                        //"https://192.168.110.13:8080",
+                        "https://192.168.110.17:8080"
                     },
                     RedirectUris =
                     {
                         "https://pnrsu-server.incomsystem.ru:8080/authentication/login-callback",
-                        "https://192.168.110.17:8080/authentication/login-callback",
-                        //"https://192.168.110.13:8080/authentication/login-callback",
-                        //"https://opnrdiso002.incomsystem.ru:8080/authentication/login-callback",
+                        "https://192.168.110.17:8080/authentication/login-callback"
                     },
                     PostLogoutRedirectUris =
                     {
                         "https://pnrsu-server.incomsystem.ru:8080/authentication/logout-callback",
-                        "https://192.168.110.17:8080/authentication/logout-callback",
-                        //"https://192.168.110.13:8080/authentication/logout-callback",
-                        //"https://opnrdiso002.incomsystem.ru:8080/authentication/logout-callback",
+                        "https://192.168.110.17:8080/authentication/logout-callback"
                     },
                     AllowedScopes =
                     {
@@ -111,24 +105,26 @@ namespace IdentityServer
                 {
                     ClientId = "checker-web-api",
                     ClientName = "CheckerApp Web",
+                    RequireClientSecret = false,
+
                     AllowedGrantTypes = GrantTypes.Code,
                     RequirePkce = true,
-                    RequireClientSecret = false,
+
                     RequireConsent = false,
                     AllowedCorsOrigins =
                     {
-                        "http://192.168.110.17:6000",
-                        "https://192.168.110.17:6001"
+                        "https://pnrsu-server.incomsystem.ru:5000",
+                        "https://192.168.110.17:5000"
                     },
                     RedirectUris =
                     {
-                        "http://192.168.110.17:6000/authentication/login-callback",
-                        "https://192.168.110.17:6001/authentication/login-callback"
+                        "https://pnrsu-server.incomsystem.ru:5000/authentication/login-callback",
+                        "https://192.168.110.17:5000/authentication/login-callback"
                     },
                     PostLogoutRedirectUris =
                     {
-                        "http://192.168.110.17:6000/authentication/logout-callback",
-                        "https://192.168.110.17:6001/authentication/logout-callback"
+                        "https://pnrsu-server.incomsystem.ru:5000/authentication/logout-callback",
+                        "https://192.168.110.17:5000/authentication/logout-callback"
                     },
                     AllowedScopes =
                     {

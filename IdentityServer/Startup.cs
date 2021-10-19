@@ -10,6 +10,7 @@ using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.Logging;
+using System;
 using System.Reflection;
 
 namespace IdentityServer
@@ -63,6 +64,7 @@ namespace IdentityServer
                 config.Cookie.Name = "InventoryApp.Identity.Cookie";
                 config.LoginPath = "/Auth/Login";
                 config.LogoutPath = "/Auth/Logout";
+                config.ExpireTimeSpan = TimeSpan.FromDays(1);
             });
 
             services.AddTransient<IAuthService, AuthService>();
@@ -72,8 +74,10 @@ namespace IdentityServer
                 options.AddDefaultPolicy(policy =>
                 {
                     policy.WithOrigins(
-                        "https://192.168.110.17:8080",
-                        "https://pnrsu-server.incomsystem.ru:8080")
+                        "https://localhost:8080",
+                        "https://localhost:5000",
+                        "https://pnrsu-server.incomsystem.ru:8080",
+                        "https://pnrsu-server.incomsystem.ru:5000")
                     .AllowAnyHeader()
                     .AllowAnyMethod();
                 });
@@ -88,7 +92,7 @@ namespace IdentityServer
             {
                 DbInitializer.InitializeDatabase(app);
             }
-            catch (System.Exception ex)
+            catch (Exception ex)
             {
                 logger.LogError(ex.Message);
             }
